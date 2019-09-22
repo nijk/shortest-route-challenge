@@ -34,7 +34,7 @@ const InteractiveMap: React.FC = () => {
     setUserLocations([]);
   };
 
-  const routes: route[] = start && end ? findRoutes(start, end, 1) : [];
+  const routes: route[] = start && end ? findRoutes(paths, start, end, 1) : [];
 
   return (
     <Wrapper>

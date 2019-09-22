@@ -1,6 +1,20 @@
 # shortest-route-challenge
 An application that finds the shortest routes between two points
 
+
+## Notes
+After researching pathfinding algorithms I decided that writing a blind-search algorithm was probably all that the brief was requesting. 
+
+I went with a depth first search (DFS) using recursion as it's pretty easy to write. Obviously if the search algorithm needed to be optimised for larger or more complex data sets, then algorithms like Greedy, Dijkstra and A* would be better options by eliminating paths using heuristics/distance from origin/destination to find the optimal path with lower complexities.
+
+Whilst these alternatives are probably the best solutions in commercial projects, I believe most developers in that context would most likely not roll their own algorithms. Therefore I came to the conclusion that the brief was probably asking to see a hand-rolled algorithm and thus I went with my own version of a DFS using Javascript array functions and rest/spread.
+
+
+#### Unit tests
+I have not included basic unit test around the route finding engine, but have excluded Enzyme tests because I'm sitting here after midnight wondering if it will matter.
+
+__If they are important, then please let me know and I'll happily add them.__
+
 ## Issues & workarounds
 1. Styled Components and Typescript seem to be a bit of an awkward mix at present, I've decided in the interests of time to simply provide the styled components as JS. This could be improved but involves workarounds, see [this Github issue](https://github.com/styled-components/styled-components/issues/630)
 2. I've tried to do a complete a job as possible given the time available but having not worked with Typescript/Flow for a while, I'm sure that numerous improvements could be made to the type checking throughout the application.
