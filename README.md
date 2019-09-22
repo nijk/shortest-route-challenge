@@ -1,6 +1,14 @@
 # shortest-route-challenge
 An application that finds the shortest routes between two points
 
+## Issues & workarounds
+1. Styled Components and Typescript seem to be a bit of an awkward mix at present, I've decided in the interests of time to simply provide the styled components as JS. This could be improved but involves workarounds, see [this Github issue](https://github.com/styled-components/styled-components/issues/630)
+2. I've tried to do a complete a job as possible given the time available but having not worked with Typescript/Flow for a while, I'm sure that numerous improvements could be made to the type checking throughout the application.
+3. It's hard to know with a brief like this where to stop with the styling work. Hopefully this implementation demonstrates enough flair in that regard, but if it does not then I would be happy to talk through improvements that could be made.
+4. There is an issue with the SVG overflowing it's container on Firefox on MacOS. I would recommend using Chrome or Safari for the best experience. I have not tested this on Windows, Linux or Phone/Tablet browsers.
+
+## Create React App
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

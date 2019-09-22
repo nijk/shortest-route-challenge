@@ -1,45 +1,65 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import { keyedCoordinates, path, route } from "../types";
+// Types
+import { keyedCoordinates, path, route } from "./types";
 
-export interface Map {
+// Styled
+import { ClickableGroup } from '../components/styled/SVG';
+import {
+  GridBox,
+  GridLine,
+  Location,
+  LocationName,
+  RouteLeg,
+  Svg,
+} from './Map.styles';
+
+interface Map {
   cellSize?: number,
   locations: keyedCoordinates;
+  onClick: (key: string) => void,
+  origin?: string,
   paths: path[],
   routes: route[],
 }
 
-const Map: React.FC<Map> = ({ cellSize = 10, locations, paths, routes }) => {
+type waypoint = string[];
+
+const Map: React.FC<Map> = ({
+  cellSize = 10,
+  locations,
+  onClick,
+  origin,
+  paths,
+  routes
+}) => {
   const { _size, ...restLocations } = locations;
   const [gridSizeX, gridSizeY] = _size;
-  const width: number = (gridSizeX * 2) * cellSize;
-  const height: number = (gridSizeY * 2) * cellSize;
-  const cellCountX: number = width / cellSize;
-  const cellCountY: number = height / cellSize;
-  const offsetX: number = (cellCountX / 4) * cellSize;
-  const offsetY: number = (cellCountY / 4) * cellSize;
-  const [shortestRoute] = routes;
-  const { waypoints } = shortestRoute;
-
-  console.log('shortestRoute', shortestRoute);
+  const cellCountX: number = gridSizeX + 1;
+  const cellCountY: number = gridSizeY + 1;
+  const width: number = cellCountX * cellSize;
+  const height: number = cellCountY * cellSize;
+  const offsetX: number = cellSize;
+  const offsetY: number = cellSize;
+  const [shortestRoute]: route[] = routes || [];
+  const { legs = [], waypoints = [] }: route = shortestRoute || {};
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} xmlns="http://www.w3.org/2000/svg">
+    <Svg viewBox={`0 0 ${width} ${height}`} xmlns="http://www.w3.org/2000/svg">
       <defs>
         <pattern id="smallGrid" width={cellSize} height={cellSize} patternUnits="userSpaceOnUse">
-          <path d={`M ${cellSize} 0 L 0 0 0 ${cellSize}`} fill="none" stroke="gray" strokeWidth="0.5"/>
+          <GridLine d={`M ${cellSize} 0 L 0 0 0 ${cellSize}`} />
         </pattern>
         <pattern id="grid" width={width} height={height} patternUnits="userSpaceOnUse">
           <rect width={width} height={height} fill="url(#smallGrid)"/>
-          <path d={`M ${width} 0 L 0 0 0 ${height}`} fill="none" stroke="gray" strokeWidth="1"/>
+          <GridLine d={`M ${width} 0 L 0 0 0 ${height}`} strokeWidth="1"/>
         </pattern>
       </defs>
-
-      <rect width="100%" height="100%" fill="url(#grid)" stroke="gray" strokeWidth="1" />
-
+      <GridBox width="100%" height="100%" fill="url(#grid)" />
       <>
         {paths.map(([start, end, , coordinates]) => {
-          const isRoutePath = waypoints && waypoints.includes(start) && waypoints.includes(end);
+          const isRoutePath = legs && legs.find(([legStart, legEnd]) =>
+            (legStart === start && legEnd === end) || (legStart === end && legEnd === start));
           const key: string = `${start}-${end}`;
           const points: string = [
             locations[start],
@@ -52,7 +72,7 @@ const Map: React.FC<Map> = ({ cellSize = 10, locations, paths, routes }) => {
           }, '');
 
           return points.length
-            ? <polyline key={key} points={points} fill="none" stroke={isRoutePath ? '#fff' : '#999'} />
+            ? <RouteLeg key={key} points={points} fill="none" isActive={isRoutePath} />
             : null;
         })}
       </>
@@ -66,14 +86,14 @@ const Map: React.FC<Map> = ({ cellSize = 10, locations, paths, routes }) => {
           const textOffset: number = radius / 4;
 
           return (
-            <Fragment key={key}>
-              <circle cx={cx} cy={cy} r={radius} fill={isRouteLocation ? '#fff' : '#999'} />
-              <text x={cx - textOffset} y={cy + textOffset} style={{ font: `${radius}px sans-serif` }}>{key}</text>
-            </Fragment>
+            <ClickableGroup key={key} onClick={() => onClick(key)}>
+              <Location cx={cx} cy={cy} r={radius} isActive={origin === key || isRouteLocation} />
+              <LocationName x={cx - textOffset} y={cy + textOffset} radius={radius} >{key}</LocationName>
+            </ClickableGroup>
           );
         })}
       </>
-    </svg>
+    </Svg>
   );
 };
 

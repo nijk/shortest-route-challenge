@@ -11,7 +11,11 @@ type partialRoute = {
 };
 
 const calculateRoute = (prev: route, [start, end, distance, coords]: path, index: number, routes: path[]): route => {
-  const { distance: prevDistance = 0, waypoints: prevWaypoints = [] } = prev;
+  const {
+    distance: prevDistance = 0,
+    legs: prevLegs = [],
+    waypoints: prevWaypoints = [],
+  } = prev;
   const isLast: boolean = index === routes.length - 1;
   const nextWaypoint: [string] = [start];
   const lastWaypoint: [string, string] = [start, end];
@@ -28,6 +32,7 @@ const calculateRoute = (prev: route, [start, end, distance, coords]: path, index
     distance: prevDistance + distance,
     id: waypoints.reduce((prev: string, waypoint: string): string =>
       prev.length ? `${prev}.${waypoint}` : waypoint, ''),
+    legs: [...prevLegs, [start, end]],
     waypoints
   };
 };
